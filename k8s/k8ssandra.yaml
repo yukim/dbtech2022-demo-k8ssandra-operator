@@ -1,0 +1,76 @@
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: demo
+spec:
+  cassandra:
+    serverVersion: "4.0.7"
+    storageConfig:
+      cassandraDataVolumeClaimSpec:
+        storageClassName: gp2
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+    config:
+      jvmOptions:
+        heapSize: 512M
+    networking:
+      hostNetwork: true
+    datacenters:
+      - metadata:
+          name: dc-tokyo
+        k8sContext: eks-dc-tokyo
+        racks:
+          - name: rack1
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-1a
+              role: cassandra
+          - name: rack2
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-1c
+              role: cassandra
+          - name: rack3
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-1d
+              role: cassandra
+        size: 3
+      - metadata:
+          name: dc-osaka
+        k8sContext: eks-dc-osaka
+        racks:
+          - name: rack1
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-3a
+              role: cassandra
+          - name: rack2
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-3b
+              role: cassandra
+          - name: rack3
+            nodeAffinityLabels:
+              topology.kubernetes.io/zone: ap-northeast-3c
+              role: cassandra
+        size: 3
+  reaper:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: role
+                  operator: In
+                  values: ["misc"]
+    heapSize: 256M
+  stargate:
+    size: 1
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: role
+                  operator: In
+                  values: ["misc"]
+    heapSize: 256M
