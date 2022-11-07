@@ -14,9 +14,7 @@ and K8ssandraCluster resource YAML file to deploy multi-DC Cassandra cluster.
 - k8s
     - K8ssandraCluster resource YAML
 
-## Set up infrastructure
-
-You need two steps to complete the setup:
+## Demo instruction
 
 ### 1. Create 3 EKSs
 
@@ -34,6 +32,7 @@ Create `terraform.tfvars` file with the above IAM roles.
 cluster_service_role = "my_cluster_role"
 nodegroup_role = "my_nodegroup_role"
 ```
+You need two phases to complete the setup.
 
 Run the following command to create 3 EKS clusters across two regions:
 
@@ -76,7 +75,7 @@ helm --kube-context eks-dc-osaka install cert-manager jetstack/cert-manager --na
 
 After installation is completed, proceed to k8ssandra-operator install.
 
-### 3 Install k8ssandra-operator
+### 3. Install k8ssandra-operator
 
 k8ssandra-operator can be install using helm or kustomize, but in this demo, use helm.
 
