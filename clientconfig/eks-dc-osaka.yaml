@@ -1,0 +1,8 @@
+apiVersion: config.k8ssandra.io/v1beta1
+kind: ClientConfig
+metadata:
+  name: eks-dc-osaka
+spec:
+  contextName: eks-dc-osaka
+  kubeConfigSecret:
+    name: eks-dc-osaka-config

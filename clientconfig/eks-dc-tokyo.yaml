@@ -1,0 +1,8 @@
+apiVersion: config.k8ssandra.io/v1beta1
+kind: ClientConfig
+metadata:
+  name: eks-dc-tokyo
+spec:
+  contextName: eks-dc-tokyo
+  kubeConfigSecret:
+    name: eks-dc-tokyo-config

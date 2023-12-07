@@ -65,26 +65,23 @@ k8ssandra-operator requires [Cert Manager](https://cert-manager.io/) to be insta
 Run the following commands to install cert manager to each EKS cluster.
 
 ```
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-helm --kube-context eks-control-plane install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
-helm --kube-context eks-dc-tokyo install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
-helm --kube-context eks-dc-osaka install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+kubectl --context eks-control-plane apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+kubectl --context eks-dc-tokyo apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+kubectl --context eks-dc-osaka apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
 ```
 
 After installation is completed, proceed to k8ssandra-operator install.
 
 ### 3. Install k8ssandra-operator
 
-k8ssandra-operator can be install using helm or kustomize, but in this demo, use helm.
+k8ssandra-operator can be install using helm or kustomize, but in this demo, use kustomize.
 
 #### Control plane
 
 Run the following to install k8ssandra-operator control plane:
 
 ```
-helm --kube-context eks-control-plane install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace
+kubectl --context eks-control-plane apply --force-conflicts --server-side -k "github.com/k8ssandra/k8ssandra-operator/config/deployments/control-plane?ref=v1.10.3"
 ```
 
 #### Data plane
@@ -92,8 +89,8 @@ helm --kube-context eks-control-plane install k8ssandra-operator k8ssandra/k8ssa
 Run the following to install k8ssandra-operator data plane:
 
 ```
-helm --kube-context eks-dc-tokyo install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace --set controlPlane=false
-helm --kube-context eks-dc-osaka install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace --set controlPlane=false
+kubectl --context eks-dc-tokyo apply --force-conflicts --server-side -k "github.com/k8ssandra/k8ssandra-operator/config/deployments/data-plane?ref=v1.10.3"
+kubectl --context eks-dc-osaka apply --force-conflicts --server-side -k "github.com/k8ssandra/k8ssandra-operator/config/deployments/data-plane?ref=v1.10.3"
 ```
 
 ### 4. Create ClientConfig

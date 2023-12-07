@@ -4,7 +4,7 @@ metadata:
   name: demo
 spec:
   cassandra:
-    serverVersion: "4.0.7"
+    serverVersion: "4.0.11"
     storageConfig:
       cassandraDataVolumeClaimSpec:
         storageClassName: gp2
